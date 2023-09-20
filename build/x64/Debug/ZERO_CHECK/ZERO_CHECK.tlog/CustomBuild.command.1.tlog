@@ -1,0 +1,10 @@
+^C:\USERS\BOXTO\NGSCLASS\TIC_TAC_TOE_3_BY_3\BUILD\CMAKEFILES\35C425252687B9FD53975B76A03F284E\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/boxto/ngsClass/Tic_Tac_Toe_3_by_3 -BC:/Users/boxto/ngsClass/Tic_Tac_Toe_3_by_3/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/boxto/ngsClass/Tic_Tac_Toe_3_by_3/build/tic_tac_toe.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

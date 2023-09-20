@@ -1,0 +1,10 @@
+^C:\USERS\BOXTO\NGSCLASS\TIC_TAC_TOE_3_BY_3\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/boxto/ngsClass/Tic_Tac_Toe_3_by_3 -BC:/Users/boxto/ngsClass/Tic_Tac_Toe_3_by_3/build --check-stamp-file C:/Users/boxto/ngsClass/Tic_Tac_Toe_3_by_3/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
