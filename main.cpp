@@ -5,8 +5,11 @@
 using namespace std;
 
 const int MAX_ROWS = 13;
+const int MIN_ROWS = 4;
 const int MAX_COLUMNS = 16;
+const int MIN_COLUMNS = 4;
 const int MAX_PLAYERS = 7;
+const int MIN_PLAYERS = 3;
 
 struct Board {
 public:
@@ -29,7 +32,9 @@ struct CaseInfo {
   bool isUppercase;
 };
 
-// Function prototypes
+////////////////////////
+// Function prototypes //
+///////////////////////
 bool isValidName(const string &str);
 string rightAlign(const string &text, int width);
 Board getBoardSize();
@@ -51,6 +56,9 @@ int getUserMove(const string &playerName, char playerPiece, const Board &board);
 void customSort(Player players[], int numberOfPlayers);
 string trim(const string &str);
 
+/////////
+// MAIN //
+////////
 int main() {
   int startingPlayerIndex =
       2; // Initialize starting player index as 2 (third player)
@@ -70,16 +78,14 @@ int main() {
       cin.clear();
       cout << "Incorrect Value! Please enter a valid value(Between 3 and 7): ";
     } else if (input.empty()) {
-      cout << "Please enter a value for the number of players (Between 3 and "
-              "7): ";
+      cout << "Please enter a value for the number of players (Between 3 and 7): ";
     } else {
       numberOfPlayersRequested = stoi(input);
 
-      if (numberOfPlayersRequested >= 3 && numberOfPlayersRequested <= 7) {
+      if (numberOfPlayersRequested >= MIN_PLAYERS && numberOfPlayersRequested <= MAX_PLAYERS) {
         break;
       } else {
-        cout
-            << "Incorrect Value! Please enter a valid value(Between 3 and 7): ";
+        cout << "Incorrect Value! Please enter a valid value(Between 3 and 7): ";
       }
     }
   }
@@ -94,8 +100,7 @@ int main() {
       person[i].fullName = trim(person[i].fullName);
       cout << "\n";
       if (!isValidName(person[i].fullName)) {
-        cout << "Invalid name! Name must only contain letters (i.e a, b, c "
-                "...) Please try again: ";
+        cout << "Invalid name! Name must only contain letters (i.e a, b, c ...) Please try again: ";
       }
     } while (!isValidName(person[i].fullName));
 
@@ -239,7 +244,11 @@ int main() {
   return 0;
 }
 
-void updateGameBoard(Board &board, int move, char playerPiece) {
+/////////////////////////////////////////////
+// Update GameBoard With The Player's Piece //
+////////////////////////////////////////////
+void updateGameBoard(Board &board, int move, char playerPiece) 
+{
   // Calculate the row and column from the move
   int row = (move - 1) / board.columns;
   int col = (move - 1) % board.columns;
@@ -248,13 +257,21 @@ void updateGameBoard(Board &board, int move, char playerPiece) {
   board.gameBoard[row][col] = playerPiece;
 }
 
-bool isValidName(const string &str) {
+//////////////////////////////////////////////////
+// Check's if the User Input For Names Are Valid //
+/////////////////////////////////////////////////
+bool isValidName(const string &str) 
+{
   int spaceCount = 0;
 
-  for (char c : str) {
-    if (c == ' ') {
+  for (char c : str) 
+  {
+    if (c == ' ') 
+    {
       spaceCount++;
-    } else if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+    } 
+    else if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) 
+    {
       return false;
     }
   }
@@ -262,23 +279,30 @@ bool isValidName(const string &str) {
   return spaceCount >= 1;
 }
 
-string getFirstName(const string &full_name) {
+///////////////////////////////
+// Find The User's First Name //
+//////////////////////////////
+string getFirstName(const string &full_name) 
+{
   size_t space_pos = full_name.find(' ');
 
-  if (space_pos != string::npos) {
+  if (space_pos != string::npos) 
+  {
     return full_name.substr(0, space_pos);
   }
   return full_name;
 }
 
-int getUserMove(const string &playerName, char playerPiece,
-                const Board &board) {
+//////////////////////////////////////
+// Get User Move For Piece Placement //
+/////////////////////////////////////
+int getUserMove(const string &playerName, char playerPiece, const Board &board) 
+{
   // Extract the first name from the full name
   string firstName = getFirstName(playerName);
 
   // Remind the player of their piece
-  cout << "It's " << firstName << "'s turn. Your piece is: " << playerPiece
-       << endl;
+  cout << "It's " << firstName << "'s turn. Your piece is: " << playerPiece << endl;
 
   string move;
   cout << "\nEnter your move (e.g., A1, B2): ";
@@ -286,16 +310,14 @@ int getUserMove(const string &playerName, char playerPiece,
   cout << "\n";
 
   // Ensure the input is in the correct format
-  for (char &c : move) {
+  for (char &c : move) 
+  {
     c = toupper(c); // Convert each character to uppercase
   }
 
-  if (move.length() < 2 || move.length() > 3 ||
-      !(move[0] >= 'A' && move[0] <= 'Z') ||
-      !(move[1] >= '0' && move[1] <= '9') ||
-      (move.length() == 3 && !(move[2] >= '0' && move[2] <= '9'))) {
-    cout << "\nInvalid move format! Please enter a move in the format A1, B2, "
-            "etc.: \n";
+  if (move.length() < 2 || move.length() > 3 || !(move[0] >= 'A' && move[0] <= 'Z') || !(move[1] >= '0' && move[1] <= '9') || (move.length() == 3 && !(move[2] >= '0' && move[2] <= '9'))) 
+  {
+    cout << "\nInvalid move format! Please enter a move in the format A1, B2, etc.: \n";
     while (cin.get() != '\n')
       ; // Clear the input buffer
 
@@ -306,27 +328,29 @@ int getUserMove(const string &playerName, char playerPiece,
   int row = rowLabel - 'A'; // Convert letter to row index (0-based)
 
   int col;
-  if (move.length() == 2) {
+  if (move.length() == 2) 
+  {
     col = move[1] - '1'; // Convert number to column index (0-based)
-  } else {
-    col =
-        (move[1] - '0') * 10 + (move[2] - '0') - 1; // Handle three-digit input
+  } 
+  else 
+  {
+    col = (move[1] - '0') * 10 + (move[2] - '0') - 1; // Handle three-digit input
   }
 
   // Check if the move is within the board boundaries
   if (row < 0 || row >= board.rows || col < 0 || col >= board.columns) {
-    cout << "\nInvalid move! The selected cell is out of bounds. Choose "
-            "another move: ";
+    cout << "\nInvalid move! The selected cell is out of bounds. Choose another move: ";
     return getUserMove(playerName, playerPiece, board);
   }
 
   // Check if the selected cell is empty (contains ' ')
-  if (board.gameBoard[row][col] != ' ') {
-    cout << "Invalid move! The selected cell is already occupied. Choose "
-            "another move: ";
+  if (board.gameBoard[row][col] != ' ') 
+  {
+    cout << "Invalid move! The selected cell is already occupied. Choose another move: ";
     return getUserMove(playerName, playerPiece, board);
   }
-  if (move.empty()) {
+  if (move.empty()) 
+  {
     cout << "\nInvalid move! Please choose a cell ie. (a1, a2 etc...) \n";
     return getUserMove(playerName, playerPiece, board);
   }
@@ -338,110 +362,149 @@ int getUserMove(const string &playerName, char playerPiece,
   return moveNumber;
 }
 
-Board getBoardSize() {
+///////////////////////////////////
+// Ask For User's Size Board Size //
+//////////////////////////////////
+Board getBoardSize() 
+{
   Board board;
   string input; // Variable to store user input
 
   bool validInput = false;
 
-  while (!validInput) {
-    do {
+  while (!validInput) 
+  {
+    do 
+    {
       cout << "Enter number of rows (4-13): ";
       getline(cin, input);
 
       input = trim(input);
       // Check if the input is empty
-      if (input.empty()) {
+      if (input.empty()) 
+      {
         cout << "Invalid input! Please enter a valid number." << endl;
         continue; // Skip to the next iteration
       }
       // Check if the input contains only digits
-      if (input.find_first_not_of("0123456789") == string::npos) {
+      if (input.find_first_not_of("0123456789") == string::npos) 
+      {
         cin.clear();
         board.rows = stoi(input); // Convert the input string to an integer
       }
-    } while (input.empty() || board.rows < 4 || board.rows > 13);
+    } while (input.empty() || board.rows < MIN_ROWS || board.rows > MAX_ROWS);
 
-    do {
+    do 
+    {
       cout << "Enter number of columns (4-16): ";
       getline(cin, input);
 
       input = trim(input);
       // Check if the input is empty
-      if (input.empty()) {
+      if (input.empty()) 
+      {
         cout << "Invalid input! Please enter a valid number." << endl;
         continue; // Skip to the next iteration
       }
       // Check if the input contains only digits
-      if (input.find_first_not_of("0123456789") == string::npos) {
+      if (input.find_first_not_of("0123456789") == string::npos) 
+      {
         board.columns = stoi(input); // Convert the input string to an integer
       }
-    } while (input.empty() || board.columns < 4 || board.columns > 16);
+    } while (input.empty() || board.columns < MIN_COLUMNS || board.columns > MAX_COLUMNS);
 
     // Check if the board size is valid (e.g., rows x columns <= 13 x 16)
-    if (board.rows * board.columns <= 13 * 16) {
+    if (board.rows * board.columns <= 13 * 16) 
+    {
       validInput = true; // Valid board size, exit the loop
-    } else {
-      cout << "Invalid board size! The product of rows and columns must be at "
-              "most 13 x 16."
-           << endl;
+    } 
+    else 
+    {
+      cout << "Invalid board size! The product of rows and columns must be at most 13 x 16." << endl;
     }
   }
 
   return board;
 }
 
-void assignPlayerPieces(Player players[], int numberOfPlayers) {
+///////////////////////////////////
+// Assign Player's Pieces To Play //
+//////////////////////////////////
+void assignPlayerPieces(Player players[], int numberOfPlayers) 
+{
   char piece = 'a';
-  for (int i = 0; i < numberOfPlayers; i++) {
-    if (i == 5) { // Check if it's the 6th player
+  for (int i = 0; i < numberOfPlayers; i++) 
+  {
+    if (i == 5) 
+    { // Check if it's the 6th player
       players[i].playerPiece = 'g';
-    } else if (i == 6) { // Check if it's the 7th player
+    } 
+    else if (i == 6) 
+    { // Check if it's the 7th player
       players[i].playerPiece = 'h';
-    } else {
+    } 
+    else 
+    {
       players[i].playerPiece = piece;
       piece++;
     }
   }
 }
 
-void initializeGameBoard(Board &board) {
+//////////////////////////////////////
+// Inialize Empty Cells In The Board //
+/////////////////////////////////////
+void initializeGameBoard(Board &board) 
+{
   board.gameBoard = new char *[board.rows];
-  for (int i = 0; i < board.rows; i++) {
+  for (int i = 0; i < board.rows; i++) 
+  {
     board.gameBoard[i] = new char[board.columns];
-    for (int j = 0; j < board.columns; j++) {
+    for (int j = 0; j < board.columns; j++) 
+    {
       board.gameBoard[i][j] = ' '; // Initialize all cells to ' '
     }
   }
 }
 
-void displayBoard(const Board &board) {
+/////////////////////////////////
+// Display's Original GameBoard //
+////////////////////////////////
+void displayBoard(const Board &board) 
+{
   // Display the top border with column numbers
   cout << "\n\n";
   cout << "   ";
-  for (int col = 0; col < board.columns; col++) {
-    if (col < 10) {
+  for (int col = 0; col < board.columns; col++) 
+  {
+    if (col < 10) 
+    {
       cout << " " << col + 1 << "  ";
-    } else if (col >= 10) {
+    } 
+    else if (col >= 10) 
+    {
       cout << col + 1 << "  ";
     }
   }
   cout << endl;
 
   // Display the board
-  for (int row = 0; row < board.rows; row++) {
+  for (int row = 0; row < board.rows; row++) 
+  {
     char rowLabel = 'A' + row;
 
     // Display the top border of each row
     cout << "   ";
-    for (int col = 0; col < board.columns; col++) {
+    for (int col = 0; col < board.columns; col++) 
+    {
       cout << "--- ";
     }
     cout << endl;
 
     // Display the cell content and labels
     cout << rowLabel << " |";
-    for (int col = 0; col < board.columns; col++) {
+    for (int col = 0; col < board.columns; col++) 
+    {
       cout << " " << board.gameBoard[row][col] << " |";
     }
     cout << " " << rowLabel << endl;
@@ -449,29 +512,37 @@ void displayBoard(const Board &board) {
 
   // Display the bottom border with row letters
   cout << "   ";
-  for (int col = 0; col < board.columns; col++) {
+  for (int col = 0; col < board.columns; col++) 
+  {
     cout << "--- ";
   }
   cout << endl;
 
   // Display the row numbers at the bottom
   cout << "   ";
-  for (int col = 0; col < board.columns; col++) {
-    if (col < 10) {
+  for (int col = 0; col < board.columns; col++) 
+  {
+    if (col < 10) 
+    {
       cout << " " << col + 1 << " "
            << " ";
-    } else if (col >= 10) {
+    } 
+    else if (col >= 10) 
+    {
       cout << col + 1 << "  ";
     }
   }
   cout << endl;
 }
 
+///////////////////////////
+// Check's If Valid Move //
+/////////////////////////
 bool isValidMove(const Board &board, int move) {
   // Check if the move is within the board boundaries
-  if (move < 1 || move > board.rows * board.columns) {
-    cout << "Invalid move! Please enter a valid move between 1 and "
-         << board.rows * board.columns << ": ";
+  if (move < 1 || move > board.rows * board.columns) 
+  {
+    cout << "Invalid move! Please enter a valid move between 1 and " << board.rows * board.columns << ": ";
     return false;
   }
 
@@ -480,72 +551,36 @@ bool isValidMove(const Board &board, int move) {
   int col = (move - 1) % board.columns;
 
   // Check if the selected cell is empty (contains ' ')
-  if (board.gameBoard[row][col] != ' ') {
-    cout << "Invalid move! The selected cell is already occupied. Choose "
-            "another move: ";
+  if (board.gameBoard[row][col] != ' ') 
+  {
+    cout << "Invalid move! The selected cell is already occupied. Choose another move: ";
     return false;
   }
 
   return true;
 }
 
+////////////////////////
+// Update's Game Board //
+///////////////////////
 void updateGameBoard(Board &board, int row, int col, char playerPiece) {
   board.gameBoard[row][col] = playerPiece;
 }
 
-// void displayGameStatistics(const Player players[], int numberOfPlayers,
-//                            int totalGamesPlayed) {
-//   cout << "\nTotal Games played: " << totalGamesPlayed << "\n\n";
-
-//   // Find the maximum length of player names for alignment
-//   int maxNameLength = 0;
-//   for (int i = 0; i < numberOfPlayers; i++) {
-//     int nameLength = players[i].fullName.length();
-//     if (nameLength > maxNameLength) {
-//       maxNameLength = nameLength;
-//     }
-//   }
-
-//   // Calculate the width of each cell to maintain consistent board dimensions
-//   int cellWidth = maxNameLength + 3; // Adjust for spacing
-
-//   // Display the top dotted line for title cells
-//   cout << string(cellWidth, '-') << "  " << string(6, '-') << " "
-//        << string(6, '-') << " " << string(6, '-') << "\n";
-
-//   // Right-align the title cells
-//   cout << "Player Name";
-//   for (int j = 0; j < cellWidth - string("Player Name").length(); j++) {
-//     cout << " ";
-//   }
-//   cout << " |  WIN | LOSS | Draw |\n";
-
-//   // Display the bottom dotted line for title cells
-//   cout << string(cellWidth, '-') << "  " << string(6, '-') << " "
-//        << string(6, '-') << " " << string(6, '-') << "\n";
-
-//   // Display player statistics
-//   for (int i = 0; i < numberOfPlayers; i++) {
-//     cout << players[i].fullName;
-//     for (int j = 0; j < cellWidth - players[i].fullName.length(); j++) {
-//       cout << " ";
-//     }
-//     cout << " |    " << players[i].playerWins << " |    "
-//          << players[i].playerLosses << " |    " << players[i].draws << " |\n";
-//     cout << string(cellWidth, '-') << "  " << string(6, '-') << " "
-//          << string(6, '-') << " " << string(6, '-') << "\n";
-//   }
-// }
-
-void displayGameStatistics(const Player players[], int numberOfPlayers,
-                           int totalGamesPlayed) {
+///////////////////////////////
+// Display's board Statistics //
+//////////////////////////////
+void displayGameStatistics(const Player players[], int numberOfPlayers, int totalGamesPlayed) 
+{
   cout << "\nTotal Games played: " << totalGamesPlayed << "\n\n";
 
   // Find the maximum length of player names for alignment
   int maxNameLength = 0;
-  for (int i = 0; i < numberOfPlayers; i++) {
+  for (int i = 0; i < numberOfPlayers; i++) 
+  {
     int nameLength = players[i].fullName.length();
-    if (nameLength > maxNameLength) {
+    if (nameLength > maxNameLength) 
+    {
       maxNameLength = nameLength;
     }
   }
@@ -554,36 +589,37 @@ void displayGameStatistics(const Player players[], int numberOfPlayers,
   int cellWidth = maxNameLength + 3; // Adjust for spacing
 
   // Display the top dotted line for title cells
-  cout << rightAlign("", cellWidth) << " " << string(6, '-') << " " << string(6, '-')
-       << " " << string(6, '-') << "\n";
+  cout << rightAlign("", cellWidth) << " " << string(6, '-') << " " << string(6, '-') << " " << string(6, '-') << "\n";
 
   // Right-align the title cells
   for (int i = 0; i < maxNameLength; i++)
     {
       cout << " ";
     }
-  cout  << rightAlign(" |  WIN | LOSS | DRAW|\n", cellWidth);
+  cout  << string(4, ' ') << rightAlign("| WIN | LOSS | DRAW | \n", cellWidth);
 
   // Display the bottom dotted line for title cells
   cout << rightAlign("", cellWidth) << " " << string(6, '-') << " " << string(6, '-') << " " << string(6, '-') << "\n";
 
   // Display player statistics
-  for (int i = 0; i < numberOfPlayers; i++) {
-    cout << rightAlign(players[i].fullName, cellWidth) << " |    "
-         << players[i].playerWins << " |    " << players[i].playerLosses
-         << " |    " << players[i].draws << "|\n";
-    cout << rightAlign("", cellWidth) << string(6, '-') << "  " << string(6, '-')
-         << " " << string(6, '-') << "\n";
+  for (int i = 0; i < numberOfPlayers; i++) 
+  {
+    cout << rightAlign(players[i].fullName, cellWidth) << " |    " << players[i].playerWins << " |    " << players[i].playerLosses << " |    " << players[i].draws << " |\n";
+    cout << rightAlign(" ", cellWidth) << string(6, '-') << "  " << string(6, '-') << " " << string(6, '-') << "\n";
   }
 }
 
 ///////////////////
 // Check for draw //
 //////////////////
-bool checkForDraw(const Board &board) {
-  for (int row = 0; row < board.rows; row++) {
-    for (int col = 0; col < board.columns; col++) {
-      if (board.gameBoard[row][col] == ' ') {
+bool checkForDraw(const Board &board) 
+{
+  for (int row = 0; row < board.rows; row++) 
+  {
+    for (int col = 0; col < board.columns; col++) 
+    {
+      if (board.gameBoard[row][col] == ' ') 
+      {
         return false; // There's an empty cell, the game is not a draw
       }
     }
@@ -594,10 +630,12 @@ bool checkForDraw(const Board &board) {
 ///////////////////////////////////////////////////////////////
 // Function to trim leading and trailing spaces from a string //
 //////////////////////////////////////////////////////////////
-string trim(const string &str) {
+string trim(const string &str) 
+{
   size_t first = str.find_first_not_of(' ');
 
-  if (string::npos == first) {
+  if (string::npos == first) 
+  {
     return str;
   }
 
@@ -609,76 +647,94 @@ string trim(const string &str) {
 ////////////////////////////////
 // Check for winning Condition ///
 ///////////////////////////////
-bool checkForWin(Board &board, int row, int col, char playerPiece) {
+bool checkForWin(Board &board, int row, int col, char playerPiece) 
+{
   // Check horizontally
   int count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row;
     int newCol = col + i;
     if (newCol >= 0 && newCol < board.columns &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+        board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
-      if (count == 3) {
+      if (count == 3) 
+      {
         // Update the winning configuration to uppercase
         updateWinningConfiguration(board, row, col, playerPiece);
         return true;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
 
   // Check vertically
   count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row + i;
     int newCol = col;
-    if (newRow >= 0 && newRow < board.rows &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+    if (newRow >= 0 && newRow < board.rows && board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
-      if (count == 3) {
+      if (count == 3) 
+      {
         // Update the winning configuration to uppercase
         updateWinningConfiguration(board, row, col, playerPiece);
         return true;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
 
   // Check diagonally (both directions)
   count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row + i;
     int newCol = col + i;
-    if (newRow >= 0 && newRow < board.rows && newCol >= 0 &&
-        newCol < board.columns &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+    if (newRow >= 0 && newRow < board.rows && newCol >= 0 && newCol < board.columns && board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
-      if (count == 3) {
+      if (count == 3) 
+      {
         // Update the winning configuration to uppercase
         updateWinningConfiguration(board, row, col, playerPiece);
         return true;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
 
   count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row + i;
     int newCol = col - i;
     if (newRow >= 0 && newRow < board.rows && newCol >= 0 &&
         newCol < board.columns &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+        board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
-      if (count == 3) {
+      if (count == 3) 
+      {
         // Update the winning configuration to uppercase
         updateWinningConfiguration(board, row, col, playerPiece);
         return true;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
@@ -689,11 +745,14 @@ bool checkForWin(Board &board, int row, int col, char playerPiece) {
 ////////////////////////////////////////
 // Update the player piece to upperCase //
 ///////////////////////////////////////
-void updateToUppercase(Board &board, int startRow, int startCol, int endRow,
-                       int endCol, char playerPiece) {
-  for (int row = startRow; row <= endRow; row++) {
-    for (int col = startCol; col <= endCol; col++) {
-      if (board.gameBoard[row][col] == playerPiece) {
+void updateToUppercase(Board &board, int startRow, int startCol, int endRow, int endCol, char playerPiece) 
+{
+  for (int row = startRow; row <= endRow; row++) 
+  {
+    for (int col = startCol; col <= endCol; col++) 
+    {
+      if (board.gameBoard[row][col] == playerPiece) 
+      {
         board.gameBoard[row][col] = toupper(playerPiece);
       }
     }
@@ -703,8 +762,10 @@ void updateToUppercase(Board &board, int startRow, int startCol, int endRow,
 ////////////////////////////////////////////////////////////////////
 // Function to convert a lowercase character to uppercase manually //
 ////////////////////////////////////////////////////////////////////
-char toUpperCase(char c) {
-  if (c >= 'a' && c <= 'z') {
+char toUpperCase(char c) 
+{
+  if (c >= 'a' && c <= 'z') 
+  {
     return c - 'a' + 'A';
   }
   return c;
@@ -713,122 +774,137 @@ char toUpperCase(char c) {
 //////////////////////////////////////////////
 // Checks for winning configuration based on //
 /////////////////////////////////////////////
-void updateWinningConfiguration(Board &board, int row, int col,
-                                char playerPiece) {
+void updateWinningConfiguration(Board &board, int row, int col, char playerPiece) 
+{
   // Define the winning configuration pattern (adjust as needed)
   char winPattern[] = "aaa"; // For example, three consecutive 'a's
 
   // Check horizontally
   int count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row;
     int newCol = col + i;
 
-    if (newCol >= 0 && newCol < board.columns &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+    if (newCol >= 0 && newCol < board.columns && board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
 
-      if (count == 3) {
+      if (count == 3) 
+      {
         // Update the winning configuration to uppercase
-        for (int j = -2; j <= 2; j++) {
+        for (int j = -2; j <= 2; j++) 
+        {
           int updateRow = row;
           int updateCol = col + j;
 
-          if (updateCol >= 0 && updateCol < board.columns &&
-              board.gameBoard[updateRow][updateCol] == playerPiece) {
+          if (updateCol >= 0 && updateCol < board.columns && board.gameBoard[updateRow][updateCol] == playerPiece) 
+          {
             board.gameBoard[updateRow][updateCol] = toupper(playerPiece);
           }
         }
         return;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
 
   // Check vertically
   count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row + i;
     int newCol = col;
 
-    if (newRow >= 0 && newRow < board.rows &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+    if (newRow >= 0 && newRow < board.rows && board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
 
       if (count == 3) {
         // Update the winning configuration to uppercase
-        for (int j = -2; j <= 2; j++) {
+        for (int j = -2; j <= 2; j++) 
+        {
           int updateRow = row + j;
           int updateCol = col;
 
-          if (updateRow >= 0 && updateRow < board.rows &&
-              board.gameBoard[updateRow][updateCol] == playerPiece) {
+          if (updateRow >= 0 && updateRow < board.rows && board.gameBoard[updateRow][updateCol] == playerPiece) 
+          {
             board.gameBoard[updateRow][updateCol] = toupper(playerPiece);
           }
         }
         return;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
 
   // Check diagonally (both directions)
   count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row + i;
     int newCol = col + i;
 
-    if (newRow >= 0 && newRow < board.rows && newCol >= 0 &&
-        newCol < board.columns &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+    if (newRow >= 0 && newRow < board.rows && newCol >= 0 && newCol < board.columns && board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
 
-      if (count == 3) {
+      if (count == 3) 
+      {
         // Update the winning configuration to uppercase
-        for (int j = -2; j <= 2; j++) {
+        for (int j = -2; j <= 2; j++) 
+        {
           int updateRow = row + j;
           int updateCol = col + j;
 
-          if (updateRow >= 0 && updateRow < board.rows && updateCol >= 0 &&
-              updateCol < board.columns &&
-              board.gameBoard[updateRow][updateCol] == playerPiece) {
+          if (updateRow >= 0 && updateRow < board.rows && updateCol >= 0 && updateCol < board.columns && board.gameBoard[updateRow][updateCol] == playerPiece) 
+          {
             board.gameBoard[updateRow][updateCol] = toupper(playerPiece);
           }
         }
         return;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
 
   count = 0;
-  for (int i = -2; i <= 2; i++) {
+  for (int i = -2; i <= 2; i++) 
+  {
     int newRow = row + i;
     int newCol = col - i;
 
-    if (newRow >= 0 && newRow < board.rows && newCol >= 0 &&
-        newCol < board.columns &&
-        board.gameBoard[newRow][newCol] == playerPiece) {
+    if (newRow >= 0 && newRow < board.rows && newCol >= 0 && newCol < board.columns && board.gameBoard[newRow][newCol] == playerPiece) 
+    {
       count++;
 
-      if (count == 3) {
+      if (count == 3) 
+      {
         // Update the winning configuration to uppercase
-        for (int j = -2; j <= 2; j++) {
+        for (int j = -2; j <= 2; j++) 
+        {
           int updateRow = row + j;
           int updateCol = col - j;
 
-          if (updateRow >= 0 && updateRow < board.rows && updateCol >= 0 &&
-              updateCol < board.columns &&
-              board.gameBoard[updateRow][updateCol] == playerPiece) {
+          if (updateRow >= 0 && updateRow < board.rows && updateCol >= 0 && updateCol < board.columns && board.gameBoard[updateRow][updateCol] == playerPiece) 
+          {
             board.gameBoard[updateRow][updateCol] = toupper(playerPiece);
           }
         }
         return;
       }
-    } else {
+    } 
+    else 
+    {
       count = 0;
     }
   }
@@ -837,10 +913,14 @@ void updateWinningConfiguration(Board &board, int row, int col,
 ////////////////////////////////////////////////////////////
 // Custom sorting function to sort players by playerPiece //
 ///////////////////////////////////////////////////////////
-void customSort(Player players[], int numberOfPlayers) {
-  for (int i = 0; i < numberOfPlayers - 1; i++) {
-    for (int j = i + 1; j < numberOfPlayers; j++) {
-      if (players[i].playerPiece > players[j].playerPiece) {
+void customSort(Player players[], int numberOfPlayers) 
+{
+  for (int i = 0; i < numberOfPlayers - 1; i++) 
+  {
+    for (int j = i + 1; j < numberOfPlayers; j++) 
+    {
+      if (players[i].playerPiece > players[j].playerPiece) 
+      {
         // Swap players[i] and players[j]
         Player temp = players[i];
         players[i] = players[j];
@@ -853,9 +933,11 @@ void customSort(Player players[], int numberOfPlayers) {
 //////////////////////////
 // Help to align strings ///
 /////////////////////////
-string rightAlign(const string &text, int width) {
+string rightAlign(const string &text, int width) 
+{
   int spacesToAdd = width - text.length();
-  if (spacesToAdd <= 0) {
+  if (spacesToAdd <= 0) 
+  {
     // No need to align, text is already longer than or equal to the width
     return text;
   }
